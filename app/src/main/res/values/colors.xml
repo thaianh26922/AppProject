@@ -4,4 +4,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="pink">#F88379</color>
     <color name="red">#c13b34</color>
+    <color name="green">#42b983</color>
+    <color name="blue">#39739d</color>
+    <color name="yellow">#f9c74f</color>
+    <color name="orange">#f89406</color>
+    <color name="card_default_color">#FFFFFF</color>
+    <color name="card_done_color">#C0E57F</color>
+
+
 </resources>

@@ -34,7 +34,8 @@ class UpdateActivity : AppCompatActivity() {
             Toast.makeText(this , newtitle , Toast.LENGTH_SHORT).show()
 
             val newcontent = binding.updateContentEditText.text.toString()
-            val updateNote = Note(noteID , newtitle , newcontent)
+            val status = "pending"
+            val updateNote = Note(noteID , newtitle , newcontent, status)
             db.updateNote(updateNote)
             finish()
             Toast.makeText(this , "Saved" , Toast.LENGTH_SHORT).show()

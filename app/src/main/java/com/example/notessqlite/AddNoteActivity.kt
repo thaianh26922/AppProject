@@ -1,6 +1,7 @@
 package com.example.notessqlite
 
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.notessqlite.databinding.ActivityAddNoteBinding
@@ -8,12 +9,18 @@ import com.example.notessqlite.databinding.ActivityAddNoteBinding
 class AddNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddNoteBinding
     private lateinit var db: NoteDatabaseHelper
+    private lateinit var backButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = NoteDatabaseHelper(this)
+
+        backButton = findViewById<ImageButton>(R.id.backButton)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
 
         binding.saveButton.setOnClickListener {
             val title = binding.titleEditText.text.toString().trim()

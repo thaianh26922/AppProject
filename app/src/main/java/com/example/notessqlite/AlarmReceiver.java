@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -15,22 +16,28 @@ import androidx.core.app.NotificationManagerCompat;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Alarm recived", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Alarm received", Toast.LENGTH_SHORT).show();
 
         Intent nextActivity = new Intent(context, NotificationActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, nextActivity, PendingIntent.FLAG_IMMUTABLE|  PendingIntent.FLAG_UPDATE_CURRENT);
+        nextActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, nextActivity, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification.Builder builder = new Notification.Builder(context)
+        // Set sound URI for the notification
+        Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.toy_ducks_quacking);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "SE1732_CHANNEL_ID")
                 .setSmallIcon(R.drawable.baseline_notifications_24)
                 .setContentTitle("Hello SE1732")
-                .setContentText("Wakeup")
+                .setContentText("Wake up")
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .setStyle(new Notification.BigTextStyle().bigText("Wakeup"))
-                .setPriority(Notification.PRIORITY_MAX);
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("Wake up"))
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setSound(soundUri); // Set the sound for the notification
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        // Notification channel setup (for Android Oreo and higher)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("SE1732_CHANNEL_ID", "SE1732_XIN_CHAO", NotificationManager.IMPORTANCE_HIGH);
             channel.setVibrationPattern(new long[]{1, 2, 3, 4, 5});
@@ -38,11 +45,11 @@ public class AlarmReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
             builder.setChannelId("SE1732_CHANNEL_ID");
         }
+
         Notification notification = builder.build();
 
-
+        // Issue the notification
         notificationManager.notify(10, notification);
         notificationManager.notify(11, notification);
-
     }
 }

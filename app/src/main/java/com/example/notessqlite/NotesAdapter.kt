@@ -82,6 +82,7 @@ class NotesAdapter(private var notes: List<Note>, private val context: Context) 
         }
     }
 
+
     // Updates the data and refreshes the RecyclerView
     fun refreshData(newNotes: List<Note>) {
         notes = newNotes

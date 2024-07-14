@@ -66,22 +66,20 @@ class NotesAdapter(private var notes: List<Note>, private val context: Context) 
 
         holder.deleteButton.setOnClickListener {
             db.deleteNoteById(note.id)
-            refreshData(db.getAllNoteNotes())
+            refreshData(db.getAllNotes())
         }
 
         holder.doneButton.setOnClickListener {
-            // updare satust done
             db.updateNoteStatus(note.id, "done")
-
             note.status = "done"
 
-            // thay đổi backgroud khi done
+            // Change background when done
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_done_color))
             Toast.makeText(context, "Has completed the job", Toast.LENGTH_SHORT).show()
-            // làm mới data
-            refreshData(db.getAllNoteNotes())
-        }
 
+            // Refresh data
+            refreshData(db.getAllNotes())
+        }
     }
 
     // Updates the data and refreshes the RecyclerView

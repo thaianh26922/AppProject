@@ -74,13 +74,16 @@ public class Alarm extends AppCompatActivity {
         binding.setAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                Intent intent = new Intent(Alarm.this, AlarmReceiver.class);
-                pendingIntent = PendingIntent.getBroadcast(Alarm.this, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                if (calendar != null) {
+                    alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                    Intent intent = new Intent(Alarm.this, AlarmReceiver.class);
+                    pendingIntent = PendingIntent.getBroadcast(Alarm.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
-//                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-                Toast.makeText(Alarm.this, "Alarm Set" + calendar.getTimeInMillis(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Alarm.this, "Alarm Set for " + binding.selectTime.getText(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Alarm.this, "Please select a time for alarm", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -88,7 +91,7 @@ public class Alarm extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Alarm.this, AlarmReceiver.class);
-                pendingIntent = PendingIntent.getBroadcast(Alarm.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                pendingIntent = PendingIntent.getBroadcast(Alarm.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                 if (alarmManager == null){
                     alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);

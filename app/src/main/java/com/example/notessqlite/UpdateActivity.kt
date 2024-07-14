@@ -27,8 +27,12 @@ class UpdateActivity : AppCompatActivity() {
             return
         }
         val note = db.getNoteByID(noteID)
-        binding.updateTitleEditText.setText(note.title)
-        binding.updateContentEditText.setText(note.content)
+        if (note != null) {
+            binding.updateTitleEditText.setText(note.title)
+        }
+        if (note != null) {
+            binding.updateContentEditText.setText(note.content)
+        }
         binding.updateSaveButton.setOnClickListener{
             val newtitle = binding.updateTitleEditText.text.toString()
             Toast.makeText(this , newtitle , Toast.LENGTH_SHORT).show()
@@ -39,7 +43,7 @@ class UpdateActivity : AppCompatActivity() {
             db.updateNote(updateNote)
             finish()
             Toast.makeText(this , "Saved" , Toast.LENGTH_SHORT).show()
-            }
+        }
 
     }
 }

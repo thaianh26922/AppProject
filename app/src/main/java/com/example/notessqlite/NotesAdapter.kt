@@ -7,19 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class NotesAdapter(private var notes: List<Note>, private val context: Context) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
-    private  var db : NoteDatabaseHelper = NoteDatabaseHelper(context)
+    private val db: NoteDatabaseHelper = NoteDatabaseHelper(context)
 
     // ViewHolder class
     class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         val contentTextView: TextView = itemView.findViewById(R.id.contentTextView)
-        val updateButon: ImageView= itemView.findViewById(R.id.editButton)
-        val DeleteButon: ImageView= itemView.findViewById(R.id.deleteButton)
-        val RingButton: ImageView= itemView.findViewById(R.id.ringButton)
-
+        val updateButton: ImageView = itemView.findViewById(R.id.editButton)
+        val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
+        val ringButton: ImageView = itemView.findViewById(R.id.ringButton)
+        val cardView: CardView = itemView.findViewById(R.id.cardView)
+        val doneButton: ImageView = itemView.findViewById(R.id.doneButton)
     }
 
     // Inflates the item layout and creates the ViewHolder
@@ -30,7 +34,7 @@ class NotesAdapter(private var notes: List<Note>, private val context: Context) 
 
     // Returns the size of the dataset
     override fun getItemCount(): Int {
-        return notes.size       
+        return notes.size
     }
 
     // Binds data to the item at the specified position
@@ -38,26 +42,46 @@ class NotesAdapter(private var notes: List<Note>, private val context: Context) 
         val note = notes[position]
         holder.titleTextView.text = note.title
         holder.contentTextView.text = note.content
-        holder.updateButon.setOnClickListener{
-            val intent = Intent(holder.itemView.context , UpdateActivity::class.java).apply {
-                putExtra("note_id" , note.id)
+
+        // Check status and update card background color
+        if (note.status == "done") {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_done_color))
+        } else {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_default_color))
+        }
+
+        holder.updateButton.setOnClickListener {
+            val intent = Intent(holder.itemView.context, UpdateActivity::class.java).apply {
+                putExtra("note_id", note.id)
             }
             holder.itemView.context.startActivity(intent)
-
         }
-        holder.RingButton.setOnClickListener{
-            val intent = Intent(holder.itemView.context , Alarm::class.java).apply {
-                putExtra("note_id" , note.id)
+
+        holder.ringButton.setOnClickListener {
+            val intent = Intent(holder.itemView.context, Alarm::class.java).apply {
+                putExtra("note_id", note.id)
             }
             holder.itemView.context.startActivity(intent)
-
         }
-        holder.DeleteButon.setOnClickListener{
+
+        holder.deleteButton.setOnClickListener {
             db.deleteNoteById(note.id)
             refreshData(db.getAllNoteNotes())
-
-
         }
+
+        holder.doneButton.setOnClickListener {
+            // updare satust done
+            db.updateNoteStatus(note.id, "done")
+
+            note.status = "done"
+
+            // thay đổi backgroud khi done
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_done_color))
+            Toast.makeText(context, "Has completed the job", Toast.LENGTH_SHORT).show()
+            // làm mới data
+            refreshData(db.getAllNoteNotes())
+        }
+
     }
 
     // Updates the data and refreshes the RecyclerView
